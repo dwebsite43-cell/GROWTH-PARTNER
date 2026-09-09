@@ -235,6 +235,8 @@ button:disabled { cursor: not-allowed; }
   .primary-button, .secondary-button { width: 100%; }
   .foundation-panel { align-self: center; width: min(100%, 390px); }
   .readiness-visual { height: 190px; }
+  .poster-visual { margin: 12px 0; }
+  .poster-badge { right: 8px; bottom: 8px; font-size: 7px; }
   .dashboard-footer { align-items: flex-start; flex-direction: column; gap: 11px; }
   .footer-meta { flex-wrap: wrap; line-height: 1.5; }
 }

@@ -217,13 +217,12 @@ export default function Home() {
               <span className="panel-label">Workspace readiness</span>
               <span className="panel-status"><span className="pulse-dot" /> Live</span>
             </div>
-            <div className="readiness-visual" aria-hidden="true">
-              <div className="orbit orbit-one" />
-              <div className="orbit orbit-two" />
-              <div className="readiness-core"><NexoraMark /></div>
-              <span className="orbit-node node-one" />
-              <span className="orbit-node node-two" />
-              <span className="orbit-node node-three" />
+            <div className="readiness-visual poster-visual">
+              <img
+                src="/manus-storage/nexora-growth-poster_a2811267.jpg"
+                alt="Nexora growth partner opportunity poster"
+              />
+              <span className="poster-badge"><Sparkles size={12} /> Growth partner playbook</span>
             </div>
             <div className="panel-footer">
               <div>
