@@ -1,13 +1,20 @@
 import { useEffect, useRef, useState } from "react";
 import {
   Bell,
+  CarFront,
   ChevronDown,
   Check,
   Command,
+  Crown,
+  Gift,
+  Laptop,
   MapPin,
   Menu,
   ShieldCheck,
+  Shirt,
   Sparkles,
+  Tablet,
+  Trophy,
   UserRound,
   X,
 } from "lucide-react";
@@ -217,12 +224,42 @@ export default function Home() {
               <span className="panel-label">Workspace readiness</span>
               <span className="panel-status"><span className="pulse-dot" /> Live</span>
             </div>
-            <div className="readiness-visual poster-visual">
-              <img
-                src="/manus-storage/nexora-growth-poster_a2811267.jpg"
-                alt="Nexora growth partner opportunity poster"
-              />
-              <span className="poster-badge"><Sparkles size={12} /> Growth partner playbook</span>
+            <div className="reward-ladder" aria-label="Nexora partner reward ladder">
+              <div className="reward-ladder-intro">
+                <span className="reward-intro-icon"><Gift size={15} /></span>
+                <div>
+                  <span className="panel-caption">Milestone rewards</span>
+                  <strong>Grow your way to more.</strong>
+                </div>
+              </div>
+              <div className="reward-list">
+                <div className="reward-row reward-row-featured">
+                  <span className="reward-icon"><Shirt size={15} /></span>
+                  <span className="reward-copy"><b>25 shops</b><small>Business Associate</small></span>
+                  <span className="reward-prize">Official T-shirt</span>
+                </div>
+                <div className="reward-row">
+                  <span className="reward-icon"><Tablet size={15} /></span>
+                  <span className="reward-copy"><b>50 shops</b><small>Silver Partner</small></span>
+                  <span className="reward-prize">Tablet</span>
+                </div>
+                <div className="reward-row">
+                  <span className="reward-icon"><Laptop size={15} /></span>
+                  <span className="reward-copy"><b>100 shops</b><small>Gold Partner</small></span>
+                  <span className="reward-prize">Branded laptop</span>
+                </div>
+                <div className="reward-row">
+                  <span className="reward-icon"><Laptop size={15} /></span>
+                  <span className="reward-copy"><b>500 shops</b><small>Platinum Partner</small></span>
+                  <span className="reward-prize">Premium laptop</span>
+                </div>
+                <div className="reward-row reward-row-supreme">
+                  <span className="reward-icon"><CarFront size={16} /></span>
+                  <span className="reward-copy"><b>1000+ shops</b><small><Crown size={11} /> Supreme Leader</small></span>
+                  <span className="reward-prize">District partner car</span>
+                </div>
+              </div>
+              <div className="reward-ladder-footer"><Trophy size={14} /> Every milestone moves you up.</div>
             </div>
             <div className="panel-footer">
               <div>

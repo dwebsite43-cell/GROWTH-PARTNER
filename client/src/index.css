@@ -166,6 +166,25 @@ button:disabled { cursor: not-allowed; }
 .panel-status { display: inline-flex; align-items: center; gap: 6px; color: #54906f; font-family: 'DM Mono', monospace; font-size: 9px; text-transform: uppercase; letter-spacing: 0.8px; }
 .readiness-visual { position: relative; display: grid; place-items: center; height: 250px; overflow: hidden; }
 .readiness-visual::before { position: absolute; width: 140px; height: 140px; border-radius: 50%; content: ''; background: radial-gradient(circle, rgba(201,107,130,0.14), rgba(201,107,130,0) 68%); }
+.reward-ladder { margin: 14px 0; padding: 13px 12px 11px; border: 1px solid rgba(201,107,130,0.18); border-radius: 16px; background: linear-gradient(145deg, rgba(255,250,247,0.85), rgba(250,239,241,0.68)); box-shadow: 0 10px 20px rgba(76,57,66,0.06); }
+.reward-ladder-intro { display: flex; align-items: center; gap: 9px; padding: 1px 3px 11px; }
+.reward-intro-icon { display: grid; place-items: center; width: 29px; height: 29px; border-radius: 10px; color: #a45b70; background: #f4dfe4; }
+.reward-ladder-intro .panel-caption { margin-bottom: 3px; }
+.reward-ladder-intro strong { display: block; color: #42343b; font-size: 11px; letter-spacing: -0.2px; }
+.reward-list { display: grid; gap: 5px; }
+.reward-row { display: grid; grid-template-columns: 27px minmax(82px, 1fr) auto; align-items: center; gap: 7px; min-height: 38px; padding: 5px 6px; border: 1px solid rgba(88,66,75,0.08); border-radius: 10px; background: rgba(255,255,255,0.58); transition: transform 180ms var(--ease-out), background 180ms var(--ease-out), box-shadow 180ms var(--ease-out); }
+.reward-row:hover { transform: translateX(2px); background: rgba(255,255,255,0.88); box-shadow: 0 5px 12px rgba(95,65,76,0.08); }
+.reward-row-featured { border-color: rgba(201,107,130,0.24); background: rgba(255,246,247,0.88); }
+.reward-row-supreme { border-color: rgba(202,151,46,0.34); background: linear-gradient(100deg, rgba(255,247,218,0.86), rgba(255,252,239,0.72)); }
+.reward-icon { display: grid; place-items: center; width: 27px; height: 27px; border-radius: 8px; color: #a45b70; background: #f6e6e9; }
+.reward-row-supreme .reward-icon { color: #a87816; background: #f9e9b7; }
+.reward-copy { display: grid; gap: 2px; min-width: 0; }
+.reward-copy b { color: #473840; font-size: 10px; line-height: 1; font-weight: 800; text-transform: uppercase; letter-spacing: 0.2px; }
+.reward-copy small { display: inline-flex; align-items: center; gap: 3px; color: #90818a; font-size: 8px; line-height: 1; font-weight: 700; }
+.reward-row-supreme .reward-copy b, .reward-row-supreme .reward-copy small { color: #8b671b; }
+.reward-prize { max-width: 82px; color: #756972; font-size: 8px; line-height: 1.2; font-weight: 800; text-align: right; }
+.reward-row-supreme .reward-prize { color: #a87816; }
+.reward-ladder-footer { display: flex; align-items: center; justify-content: center; gap: 5px; padding-top: 10px; color: #a45b70; font-family: 'DM Mono', monospace; font-size: 8px; text-transform: uppercase; letter-spacing: 0.4px; }
 .orbit { position: absolute; border: 1px solid rgba(201,107,130,0.17); border-radius: 50%; transform: rotate(-25deg); }
 .orbit-one { width: 184px; height: 108px; }
 .orbit-two { width: 238px; height: 145px; transform: rotate(52deg); border-color: rgba(122, 113, 126, 0.13); }
@@ -235,8 +254,8 @@ button:disabled { cursor: not-allowed; }
   .primary-button, .secondary-button { width: 100%; }
   .foundation-panel { align-self: center; width: min(100%, 390px); }
   .readiness-visual { height: 190px; }
-  .poster-visual { margin: 12px 0; }
-  .poster-badge { right: 8px; bottom: 8px; font-size: 7px; }
+  .reward-ladder { margin: 12px 0; }
+  .reward-prize { max-width: 94px; }
   .dashboard-footer { align-items: flex-start; flex-direction: column; gap: 11px; }
   .footer-meta { flex-wrap: wrap; line-height: 1.5; }
 }
