@@ -1,21 +1,28 @@
 import { useEffect, useRef, useState } from "react";
 import {
+  ArrowUpRight,
   Bell,
+  CalendarDays,
   CarFront,
   ChevronDown,
   Check,
   Command,
   Crown,
+  CreditCard,
+  CircleDollarSign,
   Gift,
   Laptop,
   MapPin,
   Menu,
+  RotateCcw,
   ShieldCheck,
   Shirt,
   Sparkles,
   Tablet,
   Trophy,
+  TrendingUp,
   UserRound,
+  WalletCards,
   X,
 } from "lucide-react";
 
@@ -55,6 +62,51 @@ function StatusBadge({ tone, label, value, icon }: { tone: "green" | "violet"; l
       </span>
     </div>
   );
+}
+
+type EarningsDay = { date: string; label: string; amount: number };
+const earningsData: EarningsDay[] = [
+  { date: "Mon, 08 Sep", label: "Mon", amount: 110 },
+  { date: "Tue, 09 Sep", label: "Tue", amount: 180 },
+  { date: "Wed, 10 Sep", label: "Wed", amount: 145 },
+  { date: "Thu, 11 Sep", label: "Thu", amount: 240 },
+  { date: "Fri, 12 Sep", label: "Fri", amount: 190 },
+  { date: "Sat, 13 Sep", label: "Sat", amount: 225 },
+  { date: "Sun, 14 Sep", label: "Sun", amount: 160 },
+];
+
+function AnalyticsCard({ title, eyebrow, children, className = "" }: { title: string; eyebrow: string; children: React.ReactNode; className?: string }) {
+  const id = `${title.toLowerCase().replaceAll(" ", "-")}-title`;
+  return <article className={`analytics-card ${className}`} tabIndex={0} aria-labelledby={id}><div className="analytics-card-heading"><div><span className="analytics-eyebrow">{eyebrow}</span><h3 id={id}>{title}</h3></div><span className="card-corner-dot" aria-hidden="true" /></div>{children}</article>;
+}
+
+function EarningsChart({ onRetry }: { onRetry: () => void }) {
+  const [status, setStatus] = useState<"loading" | "loaded" | "empty" | "error">("loaded");
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const total = earningsData.reduce((sum, day) => sum + day.amount, 0);
+  const maxAmount = Math.max(...earningsData.map((day) => day.amount));
+  function retry() { setStatus("loading"); onRetry(); window.setTimeout(() => setStatus("loaded"), 650); }
+  if (status === "loading") return <div className="earnings-skeleton" aria-label="Loading earnings"><span /><span /><span /><span /><span /><span /><span /></div>;
+  if (status === "empty") return <div className="analytics-empty"><CircleDollarSign size={20} /><p>No earnings recorded yet</p></div>;
+  if (status === "error") return <div className="analytics-empty analytics-error"><CircleDollarSign size={20} /><p>Unable to load earnings</p><button type="button" onClick={retry}><RotateCcw size={13} /> Retry</button></div>;
+  return <><div className="earnings-summary"><strong>₹{total.toLocaleString("en-IN")}</strong><span><TrendingUp size={13} /> +18.5% <b>This week</b></span></div><div className="chart-wrap"><div className="chart-tooltip" aria-live="polite" data-visible={activeIndex !== null}>{activeIndex !== null && <><b>{earningsData[activeIndex].date}</b><span>₹{earningsData[activeIndex].amount.toLocaleString("en-IN")}</span></>}</div><svg className="earnings-chart" viewBox="0 0 350 142" role="img" aria-label="Daily earnings bar chart for the last seven days"><line x1="8" y1="112" x2="342" y2="112" className="chart-axis" />{[0, 1, 2].map((line) => <line key={line} x1="8" y1={32 + line * 40} x2="342" y2={32 + line * 40} className="chart-grid" />)}{earningsData.map((day, index) => { const height = Math.max(10, (day.amount / maxAmount) * 76); const x = 17 + index * 47; const y = 112 - height; return <g key={day.date} onMouseEnter={() => setActiveIndex(index)} onMouseLeave={() => setActiveIndex(null)}><rect x={x} y="15" width="31" height="100" fill="transparent" tabIndex={0} aria-label={`${day.date}: ₹${day.amount}`} onFocus={() => setActiveIndex(index)} onBlur={() => setActiveIndex(null)} /><rect className={`chart-bar ${activeIndex === index ? "chart-bar-active" : ""}`} x={x + 7} y={y} width="17" height={height} rx="8.5" /><text x={x + 15.5} y="132" className="chart-label" textAnchor="middle">{day.label}</text></g>; })}</svg></div></>;
+}
+
+function TargetRing() {
+  const completed = 50;
+  const target = 100;
+  const percentage = Math.min(100, Math.max(0, Math.round((completed / target) * 100)));
+  const remaining = Math.max(0, target - completed);
+  const circumference = 2 * Math.PI * 43;
+  const dashOffset = circumference - (percentage / 100) * circumference;
+  return <div className="target-content"><div className="progress-ring" role="img" aria-label={`${percentage}% monthly target complete`}><svg viewBox="0 0 100 100" aria-hidden="true"><circle className="ring-track" cx="50" cy="50" r="43" /><circle className="ring-value" cx="50" cy="50" r="43" style={{ strokeDasharray: circumference, strokeDashoffset: dashOffset }} /></svg><strong>{percentage}%</strong></div><div className="target-stats"><div><span>Completed</span><strong>{completed}</strong></div><div><span>Remaining</span><strong>{remaining}</strong></div></div><div className="target-period"><CalendarDays size={13} /> September 2026</div></div>;
+}
+
+function AnalyticsSection() {
+  const [payoutStatus, setPayoutStatus] = useState<"Processing" | "Scheduled" | "Paid" | "Failed" | "No Payout">("Processing");
+  const [payoutAmount] = useState(1250);
+  const payoutDate = payoutStatus === "Paid" ? "Paid on 12th Aug" : payoutStatus === "Failed" ? "Attempted on 12th Aug" : payoutStatus === "No Payout" ? "No payout scheduled" : payoutStatus === "Scheduled" ? "Scheduled for 12th Aug" : "Processing for 12th Aug";
+  return <section className="analytics-section" aria-labelledby="analytics-title"><div className="section-heading-row"><div><span className="section-number">02 · Performance</span><h2 id="analytics-title">Analytics overview</h2></div><p>Signals that keep your growth moving in the right direction.</p></div><div className="analytics-grid"><AnalyticsCard title="7-Day Earnings" eyebrow="Earnings pulse" className="earnings-card"><EarningsChart onRetry={() => undefined} /></AnalyticsCard><AnalyticsCard title="Monthly Target" eyebrow="September goal" className="target-card"><div className="target-headline"><strong>50 <span>/ 100</span></strong><span>Salons onboarded</span></div><TargetRing /></AnalyticsCard><AnalyticsCard title="Lifetime Earnings" eyebrow="Since joining Nexora" className="lifetime-card"><div className="lifetime-amount">₹4,500 <ArrowUpRight size={17} /></div><div className="lifetime-stats"><div><span>Total commissions</span><strong>18</strong></div><div><span>Onboarded salons</span><strong>50</strong></div></div><div className="lifetime-note"><WalletCards size={13} /> Compounding your next milestone</div></AnalyticsCard><AnalyticsCard title="Weekly Payout" eyebrow="Next settlement" className={`payout-card payout-${payoutStatus.toLowerCase().replace(" ", "-")}`}><div className="payout-amount">₹{payoutAmount.toLocaleString("en-IN")}</div><div className="payout-status"><span className="payout-status-dot" />{payoutStatus}</div><div className="payout-details"><span><CalendarDays size={13} /> {payoutDate}</span><span><CreditCard size={13} /> UPI ·•• 7920</span></div><label className="payout-select-label" htmlFor="payout-status">Preview state</label><select id="payout-status" value={payoutStatus} onChange={(event) => setPayoutStatus(event.target.value as typeof payoutStatus)}><option>Processing</option><option>Scheduled</option><option>Paid</option><option>Failed</option><option>No Payout</option></select></AnalyticsCard></div></section>;
 }
 
 export default function Home() {
@@ -270,6 +322,8 @@ export default function Home() {
             </div>
           </aside>
         </section>
+
+        <AnalyticsSection />
 
         <footer className="dashboard-footer">
           <div className="footer-note"><span className="footer-spark">✦</span> A focused foundation for your next chapter.</div>
