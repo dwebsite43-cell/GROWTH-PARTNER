@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import {
   ArrowUpRight,
   Bell,
+  Box,
   CalendarDays,
   CarFront,
   ChevronDown,
@@ -10,10 +11,13 @@ import {
   Crown,
   CreditCard,
   CircleDollarSign,
+  CheckCircle2,
   Gift,
   Laptop,
   MapPin,
   Menu,
+  LockKeyhole,
+  MessageCircle,
   RotateCcw,
   ShieldCheck,
   Shirt,
@@ -107,6 +111,37 @@ function AnalyticsSection() {
   const [payoutAmount] = useState(1250);
   const payoutDate = payoutStatus === "Paid" ? "Paid on 12th Aug" : payoutStatus === "Failed" ? "Attempted on 12th Aug" : payoutStatus === "No Payout" ? "No payout scheduled" : payoutStatus === "Scheduled" ? "Scheduled for 12th Aug" : "Processing for 12th Aug";
   return <section className="analytics-section" aria-labelledby="analytics-title"><div className="section-heading-row"><div><span className="section-number">02 · Performance</span><h2 id="analytics-title">Analytics overview</h2></div><p>Signals that keep your growth moving in the right direction.</p></div><div className="analytics-grid"><AnalyticsCard title="7-Day Earnings" eyebrow="Earnings pulse" className="earnings-card"><EarningsChart onRetry={() => undefined} /></AnalyticsCard><AnalyticsCard title="Monthly Target" eyebrow="September goal" className="target-card"><div className="target-headline"><strong>50 <span>/ 100</span></strong><span>Salons onboarded</span></div><TargetRing /></AnalyticsCard><AnalyticsCard title="Lifetime Earnings" eyebrow="Since joining Nexora" className="lifetime-card"><div className="lifetime-amount">₹4,500 <ArrowUpRight size={17} /></div><div className="lifetime-stats"><div><span>Total commissions</span><strong>18</strong></div><div><span>Onboarded salons</span><strong>50</strong></div></div><div className="lifetime-note"><WalletCards size={13} /> Compounding your next milestone</div></AnalyticsCard><AnalyticsCard title="Weekly Payout" eyebrow="Next settlement" className={`payout-card payout-${payoutStatus.toLowerCase().replace(" ", "-")}`}><div className="payout-amount">₹{payoutAmount.toLocaleString("en-IN")}</div><div className="payout-status"><span className="payout-status-dot" />{payoutStatus}</div><div className="payout-details"><span><CalendarDays size={13} /> {payoutDate}</span><span><CreditCard size={13} /> UPI ·•• 7920</span></div><label className="payout-select-label" htmlFor="payout-status">Preview state</label><select id="payout-status" value={payoutStatus} onChange={(event) => setPayoutStatus(event.target.value as typeof payoutStatus)}><option>Processing</option><option>Scheduled</option><option>Paid</option><option>Failed</option><option>No Payout</option></select></AnalyticsCard></div></section>;
+}
+
+type Reward = { name: string; required: number; icon: React.ReactNode; accent: string };
+const rewards: Reward[] = [
+  { name: "Welcome Kit", required: 25, icon: <Gift size={24} />, accent: "rose" },
+  { name: "Branded Tablet", required: 100, icon: <Tablet size={24} />, accent: "plum" },
+  { name: "Laptop", required: 500, icon: <Laptop size={24} />, accent: "gold" },
+];
+
+type RewardStatus = "Locked" | "Almost unlocked" | "Reward Unlocked" | "Claimed";
+
+function MilestoneRewardCard({ reward, currentActiveShops, claimed, onClaim }: { reward: Reward; currentActiveShops: number; claimed: boolean; onClaim: (reward: Reward) => void }) {
+  const progress = Math.min(100, Math.max(0, Math.round((currentActiveShops / reward.required) * 100)));
+  const remaining = Math.max(0, reward.required - currentActiveShops);
+  const status: RewardStatus = claimed ? "Claimed" : currentActiveShops >= reward.required ? "Reward Unlocked" : currentActiveShops >= reward.required * 0.8 ? "Almost unlocked" : "Locked";
+  const isEligible = status === "Reward Unlocked";
+  return <article className={`milestone-card milestone-${reward.accent} milestone-${status.toLowerCase().replace(" ", "-")}`} tabIndex={0} aria-labelledby={`reward-${reward.name.toLowerCase().replaceAll(" ", "-")}`}><div className="milestone-card-top"><div className="milestone-icon">{status === "Locked" ? <LockKeyhole size={22} /> : reward.icon}</div><span className="reward-status-chip"><span className="reward-status-dot" />{status}</span></div><div className="milestone-card-copy"><h3 id={`reward-${reward.name.toLowerCase().replaceAll(" ", "-")}`}>{reward.name}</h3><p><strong>{reward.required} Active Shops</strong> required</p></div><div className="milestone-progress-meta"><span>Current progress</span><strong>{currentActiveShops} / {reward.required}</strong></div><div className="milestone-progress-track" role="progressbar" aria-label={`${reward.name} progress`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress}><span style={{ width: `${progress}%` }} /></div><div className="milestone-footer"><span>{progress}% complete</span>{status === "Almost unlocked" && <b>{remaining} shops remaining</b>}{status === "Locked" && <b>Keep growing to unlock</b>}{status === "Reward Unlocked" && <b>Ready to claim</b>}{status === "Claimed" && <b>Claimed ✓</b>}</div>{isEligible && <button type="button" className="claim-button" onClick={() => onClaim(reward)}><CheckCircle2 size={15} /> Claim Reward</button>}</article>;
+}
+
+function ClaimModal({ reward, state, onClose, onConfirm }: { reward: Reward; state: "confirm" | "submitting" | "success" | "error"; onClose: () => void; onConfirm: () => void }) {
+  return <div className="modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.currentTarget === event.target && state === "confirm") onClose(); }}><section className="claim-modal" role="dialog" aria-modal="true" aria-labelledby="claim-modal-title"><button className="modal-close" type="button" onClick={onClose} aria-label="Close claim dialog">×</button>{state === "success" ? <><div className="modal-icon modal-success"><CheckCircle2 size={26} /></div><span className="modal-kicker">Milestone complete</span><h2>Reward claimed</h2><p>Your <strong>{reward.name}</strong> has been added to your partner rewards.</p><button type="button" className="modal-primary" onClick={onClose}>Done</button></> : state === "error" ? <><div className="modal-icon modal-error"><MessageCircle size={26} /></div><span className="modal-kicker">Something went wrong</span><h2>Unable to claim reward</h2><p>We couldn’t complete your claim right now. Please try again.</p><div className="modal-actions"><button type="button" className="modal-secondary" onClick={onClose}>Cancel</button><button type="button" className="modal-primary" onClick={onConfirm}><RotateCcw size={14} /> Retry</button></div></> : <><div className="modal-icon"><Box size={26} /></div><span className="modal-kicker">Claim milestone reward</span><h2 id="claim-modal-title">Claim {reward.name}?</h2><p>Are you ready to claim this milestone reward?</p><div className="modal-actions"><button type="button" className="modal-secondary" onClick={onClose} disabled={state === "submitting"}>Cancel</button><button type="button" className="modal-primary" onClick={onConfirm} disabled={state === "submitting"}>{state === "submitting" ? "Claiming…" : "Confirm Claim"}</button></div></>}</section></div>;
+}
+
+function MilestoneSection() {
+  const [currentActiveShops] = useState(95);
+  const [claimedRewards, setClaimedRewards] = useState<string[]>([]);
+  const [selectedReward, setSelectedReward] = useState<Reward | null>(null);
+  const [claimState, setClaimState] = useState<"confirm" | "submitting" | "success" | "error">("confirm");
+  function openClaim(reward: Reward) { setSelectedReward(reward); setClaimState("confirm"); }
+  function confirmClaim() { if (!selectedReward) return; setClaimState("submitting"); window.setTimeout(() => { setClaimedRewards((claimed) => [...claimed, selectedReward.name]); setClaimState("success"); }, 700); }
+  return <section className="milestone-section" aria-labelledby="milestone-title"><div className="section-heading-row"><div><span className="section-number">03 · Recognition</span><h2 id="milestone-title">Milestone Rewards</h2></div><p>Reach milestones and unlock exclusive partner rewards.</p></div><div className="milestone-grid">{rewards.map((reward) => <MilestoneRewardCard key={reward.name} reward={reward} currentActiveShops={currentActiveShops} claimed={claimedRewards.includes(reward.name)} onClaim={openClaim} />)}</div>{selectedReward && <ClaimModal reward={selectedReward} state={claimState} onClose={() => setSelectedReward(null)} onConfirm={confirmClaim} />}</section>;
 }
 
 export default function Home() {
@@ -324,6 +359,8 @@ export default function Home() {
         </section>
 
         <AnalyticsSection />
+
+        <MilestoneSection />
 
         <footer className="dashboard-footer">
           <div className="footer-note"><span className="footer-spark">✦</span> A focused foundation for your next chapter.</div>
