@@ -144,6 +144,10 @@ function MilestoneSection() {
   return <section className="milestone-section" aria-labelledby="milestone-title"><div className="section-heading-row"><div><span className="section-number">03 · Recognition</span><h2 id="milestone-title">Milestone Rewards</h2></div><p>Reach milestones and unlock exclusive partner rewards.</p></div><div className="milestone-grid">{rewards.map((reward) => <MilestoneRewardCard key={reward.name} reward={reward} currentActiveShops={currentActiveShops} claimed={claimedRewards.includes(reward.name)} onClaim={openClaim} />)}</div>{selectedReward && <ClaimModal reward={selectedReward} state={claimState} onClose={() => setSelectedReward(null)} onConfirm={confirmClaim} />}</section>;
 }
 
+function GrowthPartnerRewardsPoster() {
+  return <section className="growth-rewards-section" aria-labelledby="growth-rewards-title"><div className="growth-rewards-heading"><div><span className="section-number">Partner rewards</span><h2 id="growth-rewards-title">Growth Partner Rewards</h2></div><p>Explore the rewards waiting as your salon network grows.</p></div><figure className="growth-rewards-poster"><img src="/manus-storage/a_polished_promotional_poster_design_flat_3d_real_7a6eb049.png" alt="Nexora Growth Partner Rewards poster showing rewards for 25, 50, 100, 250, 500, 750, and 1000 plus active shops" loading="lazy" /><figcaption>Rewards shown are subject to the applicable Nexora partner programme terms.</figcaption></figure></section>;
+}
+
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
@@ -357,6 +361,8 @@ export default function Home() {
             </div>
           </aside>
         </section>
+
+        <GrowthPartnerRewardsPoster />
 
         <AnalyticsSection />
 
